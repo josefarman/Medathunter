@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedAT-Hunter – Strategisches MedAT-Mentoring</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy: #0F1623;
+  --navy2: #161E2E;
+  --blue: #4A90C4;
+  --gold: #C9A84C;
+  --gold-light: rgba(201,168,76,0.12);
+  --red: #C0392B;
+  --cream: #F0EDE8;
+  --muted: #8A8F9E;
+  --border: rgba(255,255,255,0.08);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--navy);
+  color: var(--cream);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 48px;
+  background: rgba(15,22,35,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; font-weight: 700;
+  color: var(--cream); letter-spacing: 1px;
+}
+.nav-logo span { color: var(--gold); }
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a {
+  color: var(--muted); font-size: 14px; font-weight: 500;
+  text-decoration: none; letter-spacing: 0.3px;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--cream); }
+.nav-cta {
+  background: var(--gold); color: #0F1623;
+  padding: 10px 22px; border-radius: 8px;
+  font-size: 14px; font-weight: 600;
+  text-decoration: none; transition: background 0.2s;
+  white-space: nowrap;
+}
+.nav-cta:hover { background: #D4B35A; }
+.nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+.nav-hamburger span { width: 24px; height: 2px; background: var(--cream); border-radius: 2px; }
+
+/* ── HERO ── */
+#hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 120px 24px 80px;
+  position: relative; overflow: hidden;
+}
+
+/* Scope background decoration */
+#hero::before {
+  content: '';
+  position: absolute;
+  width: 700px; height: 700px;
+  border-radius: 50%;
+  border: 1px solid rgba(74,144,196,0.12);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+#hero::after {
+  content: '';
+  position: absolute;
+  width: 480px; height: 480px;
+  border-radius: 50%;
+  border: 1px solid rgba(74,144,196,0.08);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  font-size: 11px; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--blue);
+  font-weight: 500; margin-bottom: 24px;
+  position: relative; z-index: 1;
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(42px, 7vw, 82px);
+  font-weight: 900; line-height: 1.05;
+  margin-bottom: 28px;
+  position: relative; z-index: 1;
+  max-width: 900px;
+}
+
+.hero-title em {
+  font-style: italic; color: var(--gold);
+}
+
+.hero-sub {
+  font-size: clamp(16px, 2vw, 19px);
+  color: var(--muted); font-weight: 300;
+  max-width: 560px; line-height: 1.7;
+  margin-bottom: 48px;
+  position: relative; z-index: 1;
+}
+
+.hero-btns {
+  display: flex; gap: 14px; flex-wrap: wrap;
+  justify-content: center;
+  position: relative; z-index: 1;
+}
+
+.btn-primary {
+  background: var(--gold); color: #0F1623;
+  padding: 16px 32px; border-radius: 10px;
+  font-size: 15px; font-weight: 600;
+  text-decoration: none; transition: all 0.2s;
+  border: none; cursor: pointer;
+}
+.btn-primary:hover { background: #D4B35A; transform: translateY(-2px); }
+
+.btn-outline {
+  background: transparent; color: var(--cream);
+  padding: 16px 32px; border-radius: 10px;
+  font-size: 15px; font-weight: 500;
+  text-decoration: none; transition: all 0.2s;
+  border: 1.5px solid var(--border);
+}
+.btn-outline:hover { border-color: var(--blue); color: var(--blue); }
+
+.hero-stats {
+  display: flex; gap: 56px; margin-top: 72px;
+  position: relative; z-index: 1;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+}
+.stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px; font-weight: 700; color: var(--gold);
+}
+.stat-label {
+  font-size: 12px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+/* ── SECTION BASE ── */
+section { padding: 100px 24px; }
+.section-inner { max-width: 1080px; margin: 0 auto; }
+.section-eyebrow {
+  font-size: 11px; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--blue);
+  font-weight: 500; margin-bottom: 16px;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 700; line-height: 1.15;
+  margin-bottom: 20px;
+}
+.section-sub {
+  font-size: 17px; color: var(--muted);
+  font-weight: 300; max-width: 560px; line-height: 1.7;
+}
+
+/* ── PROBLEM ── */
+#problem { background: var(--navy2); }
+
+.problem-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 24px; margin-top: 64px;
+}
+.problem-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 14px; padding: 36px 28px;
+  transition: border-color 0.2s;
+}
+.problem-card:hover { border-color: rgba(74,144,196,0.3); }
+.problem-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 52px; font-weight: 700; color: var(--blue);
+  opacity: 0.3; line-height: 1; margin-bottom: 20px;
+}
+.problem-card h3 {
+  font-size: 18px; font-weight: 600; margin-bottom: 12px;
+}
+.problem-card p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+.problem-quote {
+  margin-top: 56px; padding: 36px 40px;
+  background: rgba(201,168,76,0.06);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 12px 12px 0;
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; font-style: italic; color: var(--cream);
+  line-height: 1.6;
+}
+
+/* ── SYSTEM ── */
+#system { background: var(--navy); }
+
+.system-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 2px; margin-top: 64px;
+  border: 1px solid var(--border); border-radius: 16px;
+  overflow: hidden;
+}
+.system-item {
+  padding: 40px 32px;
+  background: rgba(255,255,255,0.02);
+  border-right: 1px solid var(--border);
+  transition: background 0.2s;
+}
+.system-item:last-child { border-right: none; }
+.system-item:hover { background: rgba(255,255,255,0.04); }
+.system-icon {
+  width: 48px; height: 48px;
+  background: var(--gold-light);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; margin-bottom: 24px;
+}
+.system-item h3 { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+.system-item p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+/* ── PRICING ── */
+#pricing { background: var(--navy2); }
+
+.pricing-toggle {
+  display: flex; align-items: center;
+  justify-content: center; margin: 48px 0 56px;
+  gap: 0;
+}
+.pricing-tabs {
+  display: flex;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 4px;
+  position: relative;
+}
+.pricing-tab {
+  padding: 12px 28px; border-radius: 9px;
+  font-size: 14px; font-weight: 500;
+  cursor: pointer; border: none;
+  background: transparent; color: var(--muted);
+  font-family: 'Outfit', sans-serif;
+  transition: color 0.2s; position: relative; z-index: 1;
+  white-space: nowrap;
+}
+.pricing-tab.active { color: #0F1623; font-weight: 600; }
+.pricing-tab-bg {
+  position: absolute; top: 4px; left: 4px;
+  height: calc(100% - 8px);
+  background: var(--cream); border-radius: 8px;
+  transition: transform 0.25s cubic-bezier(0.4,0,0.2,1), width 0.25s;
+  z-index: 0;
+}
+.buddy-badge-tab {
+  background: var(--red); color: white;
+  font-size: 10px; font-weight: 700;
+  padding: 2px 8px; border-radius: 20px;
+  margin-left: 8px; vertical-align: middle;
+}
+
+.pricing-cards {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 20px; align-items: start;
+}
+
+.pricing-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 36px 28px;
+  position: relative; transition: transform 0.2s, border-color 0.2s;
+}
+.pricing-card:hover { transform: translateY(-4px); }
+.pricing-card.featured {
+  background: rgba(201,168,76,0.06);
+  border-color: var(--gold);
+  box-shadow: 0 0 60px rgba(201,168,76,0.1);
+  transform: translateY(-8px);
+}
+.pricing-card.featured:hover { transform: translateY(-12px); }
+
+.featured-label {
+  position: absolute; top: -14px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--gold); color: #0F1623;
+  font-size: 11px; font-weight: 700;
+  padding: 4px 16px; border-radius: 20px;
+  white-space: nowrap; letter-spacing: 0.5px;
+}
+
+.card-medal { font-size: 30px; margin-bottom: 14px; display: block; }
+.card-tier {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px; font-weight: 700; margin-bottom: 6px;
+}
+.card-tier.bronze { color: #CD7F32; }
+.card-tier.silver { color: #9BA4B5; }
+.card-tier.gold   { color: var(--gold); }
+.card-tagline {
+  font-size: 13px; color: var(--muted);
+  line-height: 1.6; margin-bottom: 24px; min-height: 52px;
+}
+
+.card-divider {
+  border: none; border-top: 1px solid var(--border); margin: 20px 0;
+}
+
+.price-options { display: flex; flex-direction: column; gap: 7px; }
+.price-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 12px; border-radius: 8px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid transparent;
+  cursor: pointer; transition: all 0.15s;
+}
+.price-row:hover { border-color: var(--border); }
+.price-row.selected { border-color: var(--gold); background: var(--gold-light); }
+.price-hours { font-size: 13px; color: var(--muted); }
+.price-right { text-align: right; }
+.price-amount { font-size: 15px; font-weight: 600; }
+.price-perh { font-size: 11px; color: var(--muted); display: block; margin-top: 2px; }
+
+.on-request {
+  padding: 20px; border: 1px dashed var(--border);
+  border-radius: 10px; text-align: center;
+  color: var(--muted); font-size: 14px; line-height: 1.6;
+}
+.on-request strong { color: var(--cream); display: block; font-size: 16px; margin-bottom: 4px; }
+
+.card-features {
+  list-style: none; margin: 24px 0 28px;
+}
+.card-features li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13.5px; padding: 7px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  line-height: 1.5;
+}
+.card-features li:last-child { border-bottom: none; }
+.check { color: var(--gold); font-size: 12px; margin-top: 2px; flex-shrink: 0; }
+.featured .check { color: var(--gold); }
+
+.card-cta {
+  width: 100%; padding: 13px;
+  border-radius: 9px; border: none;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+  text-decoration: none; display: block; text-align: center;
+}
+.cta-gold { background: var(--gold); color: #0F1623; }
+.cta-gold:hover { background: #D4B35A; }
+.cta-outline { background: transparent; border: 1.5px solid var(--border); color: var(--cream); }
+.cta-outline:hover { border-color: var(--blue); color: var(--blue); }
+.cta-red { background: var(--red); color: white; }
+.cta-red:hover { background: #A93226; }
+
+.pricing-note {
+  text-align: center; margin-top: 40px;
+  font-size: 13px; color: var(--muted); line-height: 1.8;
+}
+.pricing-note a { color: var(--gold); text-decoration: none; }
+
+/* Bring a friend */
+.referral {
+  margin-top: 56px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 40px;
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 32px;
+  flex-wrap: wrap;
+}
+.referral-left h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; margin-bottom: 8px;
+}
+.referral-left p { font-size: 14px; color: var(--muted); }
+.referral-boxes { display: flex; gap: 16px; }
+.referral-box {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 20px 24px; text-align: center;
+}
+.referral-box-label { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+.referral-box-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px; color: var(--gold); margin: 4px 0;
+}
+.referral-box-sub { font-size: 12px; color: var(--muted); }
+
+/* ── ABOUT ── */
+#about { background: var(--navy); }
+.about-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 80px; align-items: center; margin-top: 64px;
+}
+.about-img {
+  aspect-ratio: 4/5;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--muted);
+  position: relative; overflow: hidden;
+}
+.about-img::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(74,144,196,0.08), transparent);
+}
+.about-img-placeholder { font-size: 64px; }
+.about-tag {
+  display: inline-block;
+  background: var(--gold-light); color: var(--gold);
+  font-size: 11px; font-weight: 600;
+  padding: 4px 12px; border-radius: 20px;
+  letter-spacing: 1px; text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.about-text h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 3vw, 42px); font-weight: 700;
+  line-height: 1.2; margin-bottom: 24px;
+}
+.about-text p { font-size: 15px; color: var(--muted); line-height: 1.8; margin-bottom: 16px; }
+.about-bullets { list-style: none; margin-top: 28px; display: flex; flex-direction: column; gap: 12px; }
+.about-bullets li {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 14px; font-weight: 500;
+}
+.about-bullets li::before {
+  content: '✦'; color: var(--gold); font-size: 11px; flex-shrink: 0;
+}
+
+/* ── FAQ ── */
+#faq { background: var(--navy2); }
+.faq-list { margin-top: 56px; max-width: 760px; }
+.faq-item {
+  border-bottom: 1px solid var(--border);
+}
+.faq-q {
+  width: 100%; background: none; border: none;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 22px 0; cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px; font-weight: 500; color: var(--cream);
+  text-align: left; gap: 16px;
+  transition: color 0.2s;
+}
+.faq-q:hover { color: var(--gold); }
+.faq-icon {
+  font-size: 20px; color: var(--gold);
+  transition: transform 0.3s; flex-shrink: 0;
+  font-style: normal;
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+.faq-a {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s;
+}
+.faq-item.open .faq-a { max-height: 300px; }
+.faq-a p {
+  font-size: 14px; color: var(--muted);
+  line-height: 1.8; padding-bottom: 22px;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: #090D14;
+  border-top: 1px solid var(--border);
+  padding: 64px 48px 32px;
+}
+.footer-inner {
+  max-width: 1080px; margin: 0 auto;
+}
+.footer-top {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px; margin-bottom: 56px;
+}
+.footer-brand-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700; margin-bottom: 12px;
+}
+.footer-brand-name span { color: var(--gold); }
+.footer-brand-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+.footer-col h4 {
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 20px;
+}
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-col ul a {
+  font-size: 14px; color: var(--muted);
+  text-decoration: none; transition: color 0.2s;
+}
+.footer-col ul a:hover { color: var(--cream); }
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 12px;
+}
+.footer-bottom p { font-size: 12px; color: var(--muted); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  nav { padding: 16px 24px; }
+  .nav-links, .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+  .hero-stats { gap: 32px; flex-wrap: wrap; justify-content: center; }
+  .problem-grid { grid-template-columns: 1fr; }
+  .system-grid { grid-template-columns: 1fr; }
+  .system-item { border-right: none; border-bottom: 1px solid var(--border); }
+  .system-item:last-child { border-bottom: none; }
+  .pricing-cards { grid-template-columns: 1fr; }
+  .pricing-card.featured { transform: none; }
+  .pricing-card.featured:hover { transform: translateY(-4px); }
+  .about-grid { grid-template-columns: 1fr; gap: 40px; }
+  .about-img { aspect-ratio: 3/2; max-height: 280px; }
+  .referral { flex-direction: column; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .footer-bottom { flex-direction: column; text-align: center; }
+}
+
+@media (max-width: 600px) {
+  section { padding: 72px 20px; }
+  .hero-stats { flex-direction: column; gap: 20px; align-items: center; }
+  .referral-boxes { flex-direction: column; }
+  .footer-top { grid-template-columns: 1fr; }
+  .pricing-tab { padding: 10px 16px; font-size: 13px; }
+}
+
+/* ── ANIMATIONS ── */
+.fade-up {
+  opacity: 0; transform: translateY(32px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">MedAT<span>-Hunter</span></div>
+  <ul class="nav-links">
+    <li><a href="#problem">Warum scheitern?</a></li>
+    <li><a href="#system">Das System</a></li>
+    <li><a href="#pricing">Pakete</a></li>
+    <li><a href="#about">Über Josef</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <a href="https://calendly.com/DEIN-LINK" target="_blank" class="nav-cta">Erstgespräch buchen</a>
+  <div class="nav-hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-eyebrow">MedAT-Mentoring · Wien · Österreich</div>
+  <h1 class="hero-title fade-up">
+    Der MedAT ist kein<br>Wissenstest.<br>
+    Er ist ein <em>Taktiktest.</em>
+  </h1>
+  <p class="hero-sub fade-up">
+    Persönliches 1:1 Mentoring von Medizinstudenten der MedUni Wien.
+    Strategie statt Chaos – dein Platz im Medizinstudium wartet.
+  </p>
+  <div class="hero-btns fade-up">
+    <a href="https://calendly.com/DEIN-LINK" target="_blank" class="btn-primary">
+      Kostenloses Erstgespräch →
+    </a>
+    <a href="#pricing" class="btn-outline">Pakete ansehen</a>
+  </div>
+  <div class="hero-stats fade-up">
+    <div>
+      <div class="stat-num">85%</div>
+      <div class="stat-label">scheitern ohne System</div>
+    </div>
+    <div>
+      <div class="stat-num">1:1</div>
+      <div class="stat-label">Persönlicher Mentor</div>
+    </div>
+    <div>
+      <div class="stat-num">Juli</div>
+      <div class="stat-label">MedAT 2026</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="section-inner">
+    <div class="section-eyebrow">Das Problem</div>
+    <h2 class="section-title">Warum 85% trotz<br>hartem Lernen scheitern</h2>
+    <p class="section-sub">
+      Es liegt nicht an Intelligenz. Es liegt an der falschen Methode.
+    </p>
+    <div class="problem-grid">
+      <div class="problem-card fade-up">
+        <div class="problem-num">01</div>
+        <h3>Informationsflut</h3>
+        <p>Du weißt nicht was du lernen sollst – also lernst du alles. Das kostet Zeit und Energie, die du nicht hast. Ohne Fokus ist viel Lernen wie viel schießen ohne zu zielen.</p>
+      </div>
+      <div class="problem-card fade-up">
+        <div class="problem-num">02</div>
+        <h3>Kein System</h3>
+        <p>Ohne Struktur lernst du was dich interessiert, nicht was geprüft wird. 80% des Stoffs bringt 20% der Punkte – aber nur wenn du weißt welche 80%.</p>
+      </div>
+      <div class="problem-card fade-up">
+        <div class="problem-num">03</div>
+        <h3>Kein Feedback</h3>
+        <p>Du übst alleine, weißt aber nie ob du es richtig machst. Fehler die sich einschleichen, wiederholen sich im Test – und kosten dich am Ende den Platz.</p>
+      </div>
+    </div>
+    <div class="problem-quote fade-up">
+      „Cristiano Ronaldo trainiert täglich – aber niemals ohne Coach.
+      Warum solltest du den wichtigsten Test deines Lebens alleine vorbereiten?"
+    </div>
+  </div>
+</section>
+
+<!-- SYSTEM -->
+<section id="system">
+  <div class="section-inner">
+    <div class="section-eyebrow">Die Lösung</div>
+    <h2 class="section-title">Das MedAT-Hunter System</h2>
+    <p class="section-sub">
+      Nicht mehr lernen. Gezielter jagen.
+    </p>
+    <div class="system-grid fade-up">
+      <div class="system-item">
+        <div class="system-icon">🎯</div>
+        <h3>80/20 Strategie</h3>
+        <p>Wir analysieren was tatsächlich geprüft wird und fokussieren uns auf die 20% des Stoffs der 80% der Punkte bringt. Kein Zeitverlust mehr für irrelevante Themen.</p>
+      </div>
+      <div class="system-item">
+        <div class="system-icon">🔍</div>
+        <h3>Technische Fehleranalyse</h3>
+        <p>Dein Mentor analysiert nach jeder Übung nicht nur ob du richtig lagst, sondern warum du falsch lagst. So schleichen sich keine Fehler bis zum Testtag ein.</p>
+      </div>
+      <div class="system-item">
+        <div class="system-icon">🧠</div>
+        <h3>Mentaler Support</h3>
+        <p>Der MedAT ist ein Ausdauertest. Wöchentliche Check-ins halten deine Motivation stabil – auch wenn es mal schwierig wird. Du bist nicht allein.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-inner">
+    <div class="section-eyebrow">Pakete</div>
+    <h2 class="section-title">Wähl deinen Weg<br>zum Studienplatz</h2>
+    <p class="section-sub">Kein Massenprodukt. Kein generisches Skript. Ein Mentor der deinen Weg kennt.</p>
+
+    <!-- TOGGLE -->
+    <div class="pricing-toggle">
+      <div class="pricing-tabs" id="pricingTabs">
+        <div class="pricing-tab-bg" id="tabBg"></div>
+        <button class="pricing-tab active" id="tabSolo" onclick="setMode('solo')">
+          👤 1:1 Mentoring
+        </button>
+        <button class="pricing-tab" id="tabBuddy" onclick="setMode('buddy')">
+          👥 Buddy-System
+          <span class="buddy-badge-tab">bis 35% günstiger</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- CARDS -->
+    <div class="pricing-cards">
+
+      <!-- BRONZE -->
+      <div class="pricing-card fade-up">
+        <span class="card-medal">🥉</span>
+        <div class="card-tier bronze">Bronze</div>
+        <p class="card-tagline">Dein persönlicher Mentor. Dein Lernplan. Alles was du brauchst um strukturiert zu starten.</p>
+        <hr class="card-divider">
+        <div class="price-options" id="prices-bronze"></div>
+        <ul class="card-features">
+          <li><span class="check">✦</span><span>Persönlicher Mentor – immer derselbe</span></li>
+          <li><span class="check">✦</span><span>Individueller Lernplan</span></li>
+          <li><span class="check">✦</span><span>Josefs Zusammenfassungen (Insider-Wissen)</span></li>
+          <li><span class="check">✦</span><span>2 Testsimulationen inkl. Auswertung</span></li>
+          <li><span class="check">✦</span><span>WhatsApp Support</span></li>
+        </ul>
+        <a href="https://calendly.com/DEIN-LINK" target="_blank" class="card-cta cta-outline">Erstgespräch buchen →</a>
+      </div>
+
+      <!-- SILVER -->
+      <div class="pricing-card featured fade-up">
+        <div class="featured-label">⭐ Meistgewählt</div>
+        <span class="card-medal">🥈</span>
+        <div class="card-tier silver">Silber</div>
+        <p class="card-tagline">Für alle die es ernst meinen. Mehr Intensität, Josef persönlich im Loop.</p>
+        <hr class="card-divider">
+        <div class="price-options" id="prices-silver"></div>
+        <ul class="card-features">
+          <li><span class="check">✦</span><span>Alles aus Bronze</span></li>
+          <li><span class="check">✦</span><span>5 Testsimulationen + 1 Generalprobe</span></li>
+          <li><span class="check">✦</span><span>Wöchentliches 15-Min Gespräch mit Josef</span></li>
+          <li><span class="check">✦</span><span>Fortschritts-Tracker</span></li>
+          <li><span class="check">✦</span><span>Fehleranalyse-Report nach jeder Simulation</span></li>
+          <li><span class="check">✦</span><span>Monatliches Reporting</span></li>
+        </ul>
+        <a href="https://calendly.com/DEIN-LINK" target="_blank" class="card-cta cta-gold">Erstgespräch buchen →</a>
+      </div>
+
+      <!-- GOLD -->
+      <div class="pricing-card fade-up">
+        <span class="card-medal">🥇</span>
+        <div class="card-tier gold">Gold</div>
+        <p class="card-tagline">Vollgas bis zum MedAT-Tag. Maximale Intensität, kein Kompromiss.</p>
+        <hr class="card-divider">
+        <div id="prices-gold">
+          <div class="on-request">
+            <strong>Preis auf Anfrage</strong>
+            7–9h / Woche · 40€/h · Limitiert
+          </div>
+        </div>
+        <ul class="card-features">
+          <li><span class="check">✦</span><span>Alles aus Silber</span></li>
+          <li><span class="check">✦</span><span>8 Testsimulationen + 2 Generalproben</span></li>
+          <li><span class="check">✦</span><span>Priorität bei Terminwahl</span></li>
+          <li><span class="check">✦</span><span>Stressbewältigung & Testtaktik</span></li>
+          <li><span class="check">✦</span><span>Wöchentliches Reporting</span></li>
+          <li><span class="check">✦</span><span>Direkter Kontakt zum Team</span></li>
+        </ul>
+        <a href="https://calendly.com/DEIN-LINK" target="_blank" class="card-cta cta-red">Anfrage stellen →</a>
+      </div>
+    </div>
+
+    <p class="pricing-note">
+      Nicht sicher welches Paket passt?
+      <a href="https://calendly.com/DEIN-LINK" target="_blank">Kostenloses 20-Min Erstgespräch buchen →</a><br>
+      Alle Abos laufen bis zum MedAT-Tag. Kein automatisches Verlängern.
+    </p>
+
+    <!-- BRING A FRIEND -->
+    <div class="referral fade-up">
+      <div class="referral-left">
+        <h3>🤝 Bring a Friend</h3>
+        <p>Du kennst jemanden der auch den MedAT macht?<br>Empfiehl MedAT-Hunter – beide profitieren.</p>
+      </div>
+      <div class="referral-boxes">
+        <div class="referral-box">
+          <div class="referral-box-label">Du bekommst</div>
+          <div class="referral-box-val">−20%</div>
+          <div class="referral-box-sub">auf deinen nächsten Monat</div>
+        </div>
+        <div class="referral-box">
+          <div class="referral-box-label">Dein Freund bekommt</div>
+          <div class="referral-box-val">−15%</div>
+          <div class="referral-box-sub">auf den ersten Monat</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div class="about-img fade-up">
+        <span class="about-img-placeholder">📷</span>
+      </div>
+      <div class="about-text fade-up">
+        <div class="about-tag">Über den Gründer</div>
+        <h2>Vom Bundesheer<br>zur MedUni Wien</h2>
+        <p>Ich bin Josef – Medizinstudent an der MedUni Wien und ehemaliger Jäger beim österreichischen Bundesheer.</p>
+        <p>Beim Bundesheer habe ich gelernt: Erfolg ist keine Frage des Talents, sondern der Vorbereitung. Lageanalyse. Taktik. Ausführung.</p>
+        <p>Diese Denkweise habe ich auf meinen eigenen MedAT übertragen – und sie hat funktioniert. MedAT-Hunter ist das System das ich mir damals gewünscht hätte.</p>
+        <ul class="about-bullets">
+          <li>Medizinstudent MedUni Wien – kennt den Test von innen</li>
+          <li>Militärische Disziplin & taktisches Denken</li>
+          <li>Eigene Zusammenfassungen direkt aus dem Studium</li>
+          <li>Persönlicher wöchentlicher Check-up mit Silber & Gold Kunden</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-inner">
+    <div class="section-eyebrow">FAQ</div>
+    <h2 class="section-title">Häufige Fragen</h2>
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Wer sind die Mentoren?
+          <i class="faq-icon">+</i>
+        </button>
+        <div class="faq-a">
+          <p>Alle Mentoren sind Medizinstudenten österreichischer Universitäten die den MedAT selbst erfolgreich bestanden haben. Sie werden von Josef persönlich ausgewählt und eingeschult.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Wie läuft eine Session ab?
+          <i class="faq-icon">+</i>
+        </button>
+        <div class="faq-a">
+          <p>Jede Session dauert 60 Minuten. Wir gehen gemeinsam Übungsaufgaben durch, analysieren Fehler und planen die nächste Lernwoche. Du bekommst danach eine kurze Zusammenfassung per WhatsApp.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Was ist das Buddy-System?
+          <i class="faq-icon">+</i>
+        </button>
+        <div class="faq-a">
+          <p>Beim Buddy-System teilen sich zwei Schüler einen Mentor und lernen gemeinsam zur gleichen Zeit. Das reduziert die Kosten pro Person erheblich – ohne Abstriche bei der Qualität.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Muss ich StudyMed selbst kaufen?
+          <i class="faq-icon">+</i>
+        </button>
+        <div class="faq-a">
+          <p>Ja. StudyMed ist ein externes Tool das wir empfehlen aber nicht verkaufen. Du kaufst deine eigene Lizenz direkt bei StudyMed. Dein Mentor arbeitet dann gemeinsam mit dir damit.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Wie lange läuft das Abo?
+          <i class="faq-icon">+</i>
+        </button>
+        <div class="faq-a">
+          <p>Das Abo läuft bis zum MedAT-Tag und verlängert sich nicht automatisch. Du weißt von Anfang an wann es endet – kein monatliches Kündigen, kein Stress.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Wie zahle ich?
+          <i class="faq-icon">+</i>
+        </button>
+        <div class="faq-a">
+          <p>Per Banküberweisung. Du bekommst monatlich eine Rechnung und überweist den Betrag auf unser Konto. Kein Abo-System, keine automatischen Abbuchungen.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Was wenn ich mit meinem Mentor nicht klarkomme?
+          <i class="faq-icon">+</i>
+        </button>
+        <div class="faq-a">
+          <p>Schreib Josef direkt. Wir finden eine Lösung – notfalls wechselst du den Mentor. Deine Zufriedenheit und dein Erfolg haben oberste Priorität.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand-name">MedAT<span>-Hunter</span></div>
+        <p class="footer-brand-desc">Strategisches MedAT-Mentoring von Medizinstudenten.<br>Dein Platz im Medizinstudium wartet.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#problem">Warum scheitern?</a></li>
+          <li><a href="#system">Das System</a></li>
+          <li><a href="#pricing">Pakete</a></li>
+          <li><a href="#about">Über Josef</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Kontakt</h4>
+        <ul>
+          <li><a href="mailto:office@medathunter.at">office@medathunter.at</a></li>
+          <li><a href="https://instagram.com/medat.hunter" target="_blank">Instagram</a></li>
+          <li><a href="https://tiktok.com/@medat.hunter" target="_blank">TikTok</a></li>
+          <li><a href="https://calendly.com/DEIN-LINK" target="_blank">Erstgespräch buchen</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Rechtliches</h4>
+        <ul>
+          <li><a href="/impressum">Impressum</a></li>
+          <li><a href="/datenschutz">Datenschutz</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 MedAT-Hunter · medathunter.at · Alle Rechte vorbehalten</p>
+      <p>Nachhilfe & Mentoring · Wien, Österreich</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── PRICING DATA ──
+const solo = {
+  bronze: [
+    { h: '1h / Woche', p: '192€', ph: '48€/h' },
+    { h: '2h / Woche', p: '384€', ph: '48€/h' },
+  ],
+  silver: [
+    { h: '3h / Woche', p: '540€',   ph: '45€/h' },
+    { h: '4h / Woche', p: '720€',   ph: '45€/h' },
+    { h: '5h / Woche', p: '900€',   ph: '45€/h' },
+    { h: '6h / Woche', p: '1.080€', ph: '45€/h' },
+  ]
+};
+const buddy = {
+  bronze: [
+    { h: '1h / Woche', p: '140€', ph: '35€/h pro Person' },
+    { h: '2h / Woche', p: '280€', ph: '35€/h pro Person' },
+  ],
+  silver: [
+    { h: '3h / Woche', p: '396€', ph: '33€/h pro Person' },
+    { h: '4h / Woche', p: '528€', ph: '33€/h pro Person' },
+    { h: '5h / Woche', p: '660€', ph: '33€/h pro Person' },
+    { h: '6h / Woche', p: '792€', ph: '33€/h pro Person' },
+  ]
+};
+
+let isBuddy = false;
+
+function renderPrices() {
+  const d = isBuddy ? buddy : solo;
+  ['bronze','silver'].forEach(tier => {
+    const wrap = document.getElementById('prices-' + tier);
+    wrap.innerHTML = d[tier].map((row, i) => `
+      <div class="price-row ${i===0?'selected':''}" onclick="selectPrice(this)">
+        <span class="price-hours">${row.h}</span>
+        <div class="price-right">
+          <span class="price-amount">${row.p}<span style="font-size:12px;font-weight:400;color:var(--muted)"> /Mo</span></span>
+          <span class="price-perh">${row.ph}</span>
+        </div>
+      </div>`).join('');
+  });
+  const goldEl = document.getElementById('prices-gold');
+  goldEl.innerHTML = `<div class="on-request">
+    <strong>Preis auf Anfrage</strong>
+    7–9h / Woche · ${isBuddy ? '30€/h pro Person' : '40€/h'} · Limitiert
+  </div>`;
+}
+
+function setMode(mode) {
+  isBuddy = mode === 'buddy';
+  const tabSolo  = document.getElementById('tabSolo');
+  const tabBuddy = document.getElementById('tabBuddy');
+  const tabBg    = document.getElementById('tabBg');
+  if (isBuddy) {
+    tabSolo.classList.remove('active');
+    tabBuddy.classList.add('active');
+    tabBg.style.transform = `translateX(${tabSolo.offsetWidth}px)`;
+    tabBg.style.width = tabBuddy.offsetWidth + 'px';
+    tabBg.style.background = 'var(--blue)';
+    tabBuddy.style.color = 'white';
+  } else {
+    tabSolo.classList.add('active');
+    tabBuddy.classList.remove('active');
+    tabBg.style.transform = 'translateX(0)';
+    tabBg.style.width = tabSolo.offsetWidth + 'px';
+    tabBg.style.background = 'var(--cream)';
+    tabBuddy.style.color = '';
+  }
+  renderPrices();
+}
+
+function selectPrice(el) {
+  el.closest('.price-options').querySelectorAll('.price-row')
+    .forEach(r => r.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ── FAQ ──
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// ── SCROLL ANIMATIONS ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// ── INIT ──
+window.addEventListener('load', () => {
+  renderPrices();
+  const tabBg = document.getElementById('tabBg');
+  const tabSolo = document.getElementById('tabSolo');
+  tabBg.style.width = tabSolo.offsetWidth + 'px';
+});
+
+// ── NAV MOBILE ──
+function toggleMenu() {
+  const links = document.querySelector('.nav-links');
+  const cta = document.querySelector('nav .nav-cta');
+  if (links) links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
+}
+</script>
+</body>
+</html>
