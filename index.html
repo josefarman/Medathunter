@@ -227,9 +227,19 @@ footer { background: #090D14; border-top: 1px solid var(--border); padding: 64px
 
 /* RESPONSIVE */
 @media (max-width: 900px) {
-  nav { padding: 16px 24px; }
+  nav { padding: 16px 24px; flex-wrap: wrap; }
+  .nav-logo { white-space: nowrap; }
   .nav-links, nav .nav-cta { display: none; }
   .nav-hamburger { display: flex; }
+  nav.open .nav-links {
+    display: flex; flex-direction: column; gap: 0; width: 100%; order: 3;
+    margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--border);
+  }
+  nav.open .nav-links a { display: block; padding: 14px 0; font-size: 16px; }
+  nav.open .nav-cta {
+    display: block; order: 4; width: 100%;
+    text-align: center; margin: 8px 0 4px;
+  }
   .hero-stats { gap: 32px; flex-wrap: wrap; justify-content: center; }
   .usp-strip-inner { gap: 24px; }
   .problem-grid { grid-template-columns: 1fr; }
@@ -779,11 +789,12 @@ window.addEventListener('load', () => {
 });
 
 function toggleMenu() {
-  const links = document.querySelector('.nav-links');
-  const cta = document.querySelector('nav .nav-cta');
-  if (links) links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
-  if (cta) cta.style.display = cta.style.display === 'inline-block' ? 'none' : 'inline-block';
+  document.querySelector('nav').classList.toggle('open');
 }
+
+document.querySelectorAll('.nav-links a, nav .nav-cta').forEach(a =>
+  a.addEventListener('click', () => document.querySelector('nav').classList.remove('open'))
+);
 </script>
 </body>
 </html>
