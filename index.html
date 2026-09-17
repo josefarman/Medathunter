@@ -292,6 +292,9 @@ section { padding: 100px 24px; }
 .newsletter-btn { background: var(--gold); color: #0F1623; padding: 14px 24px; border-radius: 10px; border: none; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: background 0.2s; }
 .newsletter-btn:hover { background: #D4B35A; }
 .newsletter-note { font-size: 12px; color: var(--muted); margin-top: 12px; }
+.newsletter-ok { max-width: 480px; margin: 0 auto; padding: 18px 20px; background: rgba(46,204,113,0.1); border: 1px solid rgba(46,204,113,0.3); border-radius: 12px; color: #2ECC71; font-size: 15px; font-weight: 500; }
+#brevoZiel { display: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
 /* CONTACT */
 #contact { background: var(--navy); }
@@ -638,8 +641,14 @@ footer { background: #090D14; border-top: 1px solid var(--border); padding: 64px
       <div class="section-eyebrow" style="text-align:center">Gratis</div>
       <h2>Hol dir deinen kostenlosen KFF-Trainingstest</h2>
       <p>Trag dich ein und bekomm sofort einen kompletten KFF-Probetest direkt in dein Postfach – inklusive Auswertung und den häufigsten Fehlern.</p>
-      <form class="newsletter-form" onsubmit="handleNewsletter(event)">
-        <input type="email" class="newsletter-input" placeholder="Deine E-Mail Adresse" required>
+      <iframe name="brevoZiel" id="brevoZiel" title="Newsletter-Anmeldung" tabindex="-1"></iframe>
+      <form class="newsletter-form" id="newsletterForm" method="POST" target="brevoZiel"
+            action="https://aa15c3af.sibforms.com/serve/MUIFADF9Oe1yuNvQIbEZjf-dddki3VzRQ-DfiuFvCkawN1InLf84H0g726w0QXayQbDf3ND0WpD4VasABq9Z5jZIY1dZb6KDgN01oXMfel1maEeta4VPR-7QeLi_-PyLj5mmtWGSlg9xgH2EUZSI8DHpJG2Ll3rnhzEKKjF3GloD2BDKn99oNC1tew0IT9E1mtrskzL7BpTjBvcvRg=="
+            onsubmit="handleNewsletter(event)">
+        <label class="sr-only" for="nl-email">Deine E-Mail-Adresse</label>
+        <input type="email" id="nl-email" name="EMAIL" class="newsletter-input" placeholder="Deine E-Mail Adresse" required>
+        <input type="text" name="email_address_check" value="" class="sr-only" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <input type="hidden" name="locale" value="de">
         <button type="submit" class="newsletter-btn">Gratis erhalten →</button>
       </form>
       <p class="newsletter-note">Kein Spam. Jederzeit abmeldbar.</p>
@@ -924,8 +933,16 @@ async function handleContact(e) {
 }
 
 function handleNewsletter(e) {
-  e.preventDefault();
-  e.target.innerHTML = '<p style="color:var(--gold);font-weight:600;font-size:16px">✓ Danke! Schau in dein Postfach.</p>';
+  // Bewusst kein preventDefault: das Formular postet an Brevo in den
+  // versteckten Rahmen. Ein fetch() waere fremder Herkunft und koennte die
+  // Antwort nicht lesen - die Anmeldung soll aber verlaesslich ankommen.
+  const form = e.target;
+  setTimeout(() => {
+    form.outerHTML = '<p class="newsletter-ok">✓ Fast geschafft – bestätige den Link in deiner E-Mail, ' +
+      'dann kommt der KFF-Trainingstest.</p>';
+    const note = document.querySelector('.newsletter-note');
+    if (note) note.textContent = 'Keine Bestätigungsmail bekommen? Schau kurz im Spam-Ordner nach.';
+  }, 0);
 }
 
 const observer = new IntersectionObserver(entries => {
