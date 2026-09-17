@@ -5,7 +5,8 @@
 const fs = require('fs');
 const A = require('./aufbereiten');
 const F = require('./figuren');
-const { figurSVG } = require('./svg');
+const { teileSVG, formSVG } = require('./svg');
+const FORM = require('./formen');
 
 const B = 'ABCDE';
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
@@ -61,12 +62,12 @@ const kaesten = (n, opt) => `<div class="antw">` +
 const figurBlock = it => `
 <div class="aufg figur">
   <div class="aufg-nr">${it.nr}</div>
-  <div class="figur-teile">
-    <span class="mini">Einzelteile</span>
-    ${it.teile.map(t => figurSVG(t, 55, '#C9A84C', '#0F1623')).join('')}
-  </div>
-  <div class="figur-opt">
-    ${it.optionen.map((o, i) => `<div class="fo"><i>${B[i]}</i>${figurSVG(o, 55, '#FFFFFF', '#0F1623')}</div>`).join('')}
+  <div class="figur-inhalt">
+    ${teileSVG(it.teile, 415, 104, '#C9A84C', '#0F1623', 0.18, 62 * 0.42 * 2.3)}
+    <div class="figur-opt">
+      ${it.optionen.map((o, i) => `<div class="fo">${formSVG(o.ecken, 62, '#F7F5F2', '#0F1623')}<i>(${B[i]})</i></div>`).join('')}
+      <div class="fo keine"><span>Keine der Antwort&shy;möglichkeiten ist richtig.</span><i>(E)</i></div>
+    </div>
   </div>
 </div>`;
 
@@ -177,14 +178,15 @@ h1,h2,h3,h4 { font-family:'Playfair Display',serif; }
 .buchstaben .kasten { font-weight:600; }
 
 /* Figuren */
-.figur { flex-direction:row; align-items:flex-start; }
-.figur-teile { flex:0 0 52mm; display:flex; flex-wrap:wrap; gap:1.5mm; align-items:center;
-               background:var(--sand); border-radius:2mm; padding:2mm; }
-.figur-teile .mini { flex:0 0 100%; font-size:7pt; letter-spacing:1.5px; text-transform:uppercase; color:var(--grau); }
-.figur-opt { flex:1; display:flex; gap:2mm; justify-content:space-between; }
-.fo { text-align:center; }
-.fo i { display:block; font-style:normal; font-size:8pt; font-weight:600; color:var(--grau); }
-.fo svg { border:1px solid var(--linie); border-radius:1.5mm; }
+.figur { align-items:flex-start; }
+.figur-inhalt { flex:1; }
+.figur-inhalt > svg { display:block; margin:0 auto; }
+.figur-opt { display:flex; align-items:center; justify-content:space-between; gap:2mm;
+             border:1px solid var(--linie); border-radius:2mm; padding:2mm 3mm; margin-top:1.5mm; }
+.fo { text-align:center; flex:1; }
+.fo i { display:block; font-style:normal; font-size:8.5pt; color:var(--grau); margin-top:0.5mm; }
+.fo.keine { flex:1.5; }
+.fo.keine span { display:block; font-size:8pt; color:var(--grau); line-height:1.25; padding:0 2mm; }
 
 /* Ausweise */
 .ausweis-gitter { display:grid; grid-template-columns:1fr 1fr; gap:4mm; margin-top:4mm; }
@@ -288,7 +290,7 @@ h1,h2,h3,h4 { font-family:'Playfair Display',serif; }
 <!-- UT 1 -->
 <div class="seite">
   ${kopf(1,
-    'Links siehst du mehrere Einzelteile. Welche der fünf Figuren A bis E lässt sich aus <b>allen</b> Teilen zusammensetzen? Die Teile dürfen gedreht, aber nicht gespiegelt oder übereinandergelegt werden.')}
+    'Oben siehst du mehrere Einzelteile. Welche der vier Grundformen lässt sich aus <b>allen</b> Teilen lückenlos zusammensetzen? Die Teile dürfen gedreht, aber nicht gespiegelt oder übereinandergelegt werden. Passt keine der vier, ist <b>(E)</b> richtig.')}
   ${figuren.map(figurBlock).join('')}
 </div>
 
@@ -363,11 +365,15 @@ h1,h2,h3,h4 { font-family:'Playfair Display',serif; }
   <div class="loes-gruppe" style="margin-top:6mm">
     <h3>Untertest 1 · Figuren zusammensetzen</h3>
     <div class="kompakt">
-      ${figuren.map(f => `<div>${f.nr} &nbsp;<b>${B[f.loesung]}</b></div>`).join('')}
+      ${figuren.map(f => `<div>${f.nr} &nbsp;<b>${B[f.loesung]}</b><br><span style="font-size:7pt;color:#6B7280">${f.loesung === 4 ? f.zielName + ' – nicht dabei' : f.zielName}</span></div>`).join('')}
     </div>
     <p style="margin-top:3mm;font-size:9pt;color:var(--grau)">
-      Alle fünf Antwortfiguren haben dieselbe Fläche – Kästchenzählen hilft also nicht weiter.
-      Such stattdessen die auffälligste Kante eines Teils und prüfe, welche Figur sie überhaupt aufnehmen kann.</p>
+      Die Teile stammen immer aus genau einer Grundform, ihre Flächensumme ist deren Fläche –
+      jede andere Form hat eine andere Fläche und ist damit unmöglich, egal wie man legt.
+      Praktisch erkennst du das schneller an den Kanten: Hat ein Teil eine gebogene Kante, muss die
+      Lösung rund sein. Sind alle Kanten gerade, zähl die Außenecken der Teile – sie bilden zusammen
+      die Ecken der gesuchten Form. Und rechne immer mit (E): In ${figuren.filter(f => f.loesung === 4).length} von ${figuren.length} Aufgaben
+      ist die richtige Form gar nicht abgebildet.</p>
   </div>
 
   <div class="loes-gruppe">

@@ -1,134 +1,113 @@
-const g = require('./geometrie');
-const { zusammensetzbar } = require('./packen');
+// Erzeugt Aufgaben vom Typ "Figuren zusammensetzen" im MedAT-Format:
+// unregelmaessige Bruchstuecke oben, vier Grundformen als Antwort A-D,
+// dazu fest (E) "Keine der Antwortmoeglichkeiten ist richtig".
+//
+// Die Eindeutigkeit ergibt sich aus der Flaeche: die Bruchstuecke stammen aus
+// genau einer Zielform, ihre Flaechensumme ist damit deren Flaeche. Jede andere
+// Grundform des Katalogs hat eine andere Flaeche und ist deshalb aus diesen
+// Teilen nicht legbar - unabhaengig davon, wie man sie anordnet.
 
-// Reproduzierbarer Zufall, damit derselbe Test jederzeit erneut entsteht.
-function rng(seed) {
-  let s = seed >>> 0;
-  return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
-}
-const wahl = (r, arr) => arr[Math.floor(r() * arr.length)];
-const TYPEN = ['F','F','A','B','C','D'];
+const F = require('./formen');
+const Z = require('./zerschneiden');
 
-function zielFigur(r, anzahl) {
-  const zellen = [{ x: 0, y: 0, t: 'F' }];
-  let schutz = 0;
-  while (zellen.length < anzahl && schutz++ < 400) {
-    const basis = wahl(r, zellen);
-    const [dx, dy] = wahl(r, [[1,0],[-1,0],[0,1],[0,-1]]);
-    const x = basis.x + dx, y = basis.y + dy;
-    if (zellen.some(z => z.x === x && z.y === y)) continue;
-    const kand = [...zellen, { x, y, t: wahl(r, TYPEN) }];
-    if (g.gueltig(kand)) zellen.push(kand[kand.length - 1]);
-  }
-  return zellen.length === anzahl ? g.normieren(zellen) : null;
-}
+function rng(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+const wahl = (r, a) => a[Math.floor(r() * a.length)];
+const mischen = (r, a) => { a = [...a]; for (let i = a.length-1; i > 0; i--) { const j = Math.floor(r()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; };
 
-function zerlegen(r, zellen, teile) {
-  for (let versuch = 0; versuch < 300; versuch++) {
-    const frei = [...zellen];
-    const gruppen = [];
-    const proTeil = Math.floor(zellen.length / teile);
-    let ok = true;
-    for (let i = 0; i < teile; i++) {
-      const soll = (i === teile - 1) ? frei.length : proTeil + (r() < 0.5 ? 1 : 0);
-      const start = wahl(r, frei);
-      const gruppe = [start];
-      frei.splice(frei.indexOf(start), 1);
-      let schutz = 0;
-      while (gruppe.length < soll && frei.length && schutz++ < 200) {
-        const nachbarn = frei.filter(f => gruppe.some(z => Math.abs(z.x-f.x) + Math.abs(z.y-f.y) === 1));
-        if (!nachbarn.length) break;
-        const n = wahl(r, nachbarn);
-        gruppe.push(n); frei.splice(frei.indexOf(n), 1);
-      }
-      if (gruppe.length < 2 || !g.gueltig(gruppe)) { ok = false; break; }
-      gruppen.push(g.normieren(gruppe));
+const SCHNEIDBAR = F.KATALOG.filter(f => !f.konkav);
+const KEINE = 4;                     // Antwortposition E
+
+// Groesster Bogen, den ein einzelnes Teil traegt (in Grad). Bei runden
+// Zielformen ist die gebogene Kante das entscheidende Erkennungsmerkmal -
+// traegt kein Teil ein nennenswertes Bogenstueck, ist die Aufgabe nicht loesbar.
+function groesstesBogenstueck(teile, segmenteProVollkreis = 96) {
+  let best = 0;
+  for (const t of teile) {
+    let lauf = 0;
+    // Nur gueltig VOR dem Zentrieren/Drehen: dann liegen Bogenpunkte noch
+    // auf dem Einheitskreis um den Ursprung.
+    const aufBogen = t.map(([x, y]) => Math.abs(Math.hypot(x, y) - 1) < 1e-6);
+    for (let i = 0; i < t.length * 2; i++) {
+      if (aufBogen[i % t.length]) { lauf++; best = Math.max(best, lauf); }
+      else lauf = 0;
     }
-    if (ok && !frei.length && gruppen.length === teile) return gruppen;
   }
+  return (best / segmenteProVollkreis) * 360;
+}
+
+// Groesster relativer Flaechenunterschied zwischen zwei Katalogformen - nur
+// zur Kontrolle: alle Paare muessen sich unterscheiden, sonst waere eine
+// Aufgabe nicht eindeutig.
+function flaechenKonflikt() {
+  const f = F.KATALOG.map(x => ({ id: x.id, a: F.flaeche(x.ecken) }));
+  for (let i = 0; i < f.length; i++)
+    for (let j = i + 1; j < f.length; j++)
+      if (Math.abs(f[i].a - f[j].a) < 1e-9) return [f[i].id, f[j].id];
   return null;
 }
 
+// Antwortauswahl: bei runder Zielform sollen auch runde Ablenker dabei sein,
+// sonst verraet schon die gebogene Kante eines Teils die Loesung.
 function ablenker(r, ziel, wieviele) {
-  const raus = [], gesehen = new Set([g.signatur(ziel)]);
-  let schutz = 0;
-  while (raus.length < wieviele && schutz++ < 4000) {
-    const kopie = ziel.map(z => ({ ...z }));
-    const umzuege = r() < 0.6 ? 1 : 2;
-    let kand = kopie;
-    for (let u = 0; u < umzuege; u++) {
-      const weg = Math.floor(r() * kand.length);
-      const typ = kand[weg].t;
-      const rest = kand.filter((_, i) => i !== weg);
-      if (!rest.length) break;
-      const basis = wahl(r, rest);
-      const [dx, dy] = wahl(r, [[1,0],[-1,0],[0,1],[0,-1]]);
-      const x = basis.x + dx, y = basis.y + dy;
-      if (rest.some(z => z.x === x && z.y === y)) { kand = null; break; }
-      kand = [...rest, { x, y, t: typ }];   // gleicher Typ -> gleiche Flaeche
-    }
-    if (!kand || !g.gueltig(kand)) continue;
-    if (g.flaeche(kand) !== g.flaeche(ziel)) continue;
-    const sig = g.signatur(kand);
-    if (gesehen.has(sig)) continue;
-    gesehen.add(sig);
-    raus.push(g.normieren(kand));
-  }
+  const andere = F.KATALOG.filter(f => f.id !== (ziel && ziel.id));
+  const rund = andere.filter(f => f.rund), eckig = andere.filter(f => !f.rund);
+  let pool;
+  if (ziel && ziel.rund) pool = [...mischen(r, rund).slice(0, 2), ...mischen(r, eckig)];
+  else                   pool = [...mischen(r, eckig).slice(0, 2), ...mischen(r, andere)];
+  const raus = [];
+  for (const f of pool) { if (!raus.some(x => x.id === f.id)) raus.push(f); if (raus.length === wieviele) break; }
   return raus.length === wieviele ? raus : null;
 }
 
-function aufgabe(r, nr) {
-  for (let versuch = 0; versuch < 3000; versuch++) {
-    const anzahl = 7 + Math.floor(r() * 3);          // 7-9 Zellen
-    const ziel = zielFigur(r, anzahl);
-    if (!ziel) continue;
-    const teile = zerlegen(r, ziel, r() < 0.5 ? 3 : 4);
+function aufgabe(r, nr, sollLoesung) {
+  for (let versuch = 0; versuch < 400; versuch++) {
+    const ziel = wahl(r, SCHNEIDBAR);
+    const teile = Z.zerlegen(r, ziel.ecken, 5 + Math.floor(r() * 2));   // 5-6 Teile
     if (!teile) continue;
-    const ab = ablenker(r, ziel, 4);
-    if (!ab) continue;
-    // Teile zufaellig drehen - im echten Test darf gedreht, nie gespiegelt werden.
-    const gedreht = teile.map(t => {
-      let cur = t;
-      const n = Math.floor(r() * 4);
-      for (let i = 0; i < n; i++) cur = g.drehen(cur);
-      return g.normieren(cur);
-    });
-    // Entscheidend: aus denselben Teilen darf sich nur EINE Antwortfigur legen
-    // lassen, sonst haette die Aufgabe mehrere richtige Loesungen.
-    if (!zusammensetzbar(gedreht, ziel)) continue;
-    if (ab.some(o => zusammensetzbar(gedreht, o))) continue;
+    // Runde Zielform ohne sichtbaren Bogen waere nicht loesbar -> verwerfen.
+    const bogen = ziel.rund ? groesstesBogenstueck(teile) : 0;
+    if (ziel.rund && bogen < 40) continue;
 
-    const optionen = [ziel, ...ab];
-    for (let i = optionen.length - 1; i > 0; i--) {   // mischen
-      const j = Math.floor(r() * (i + 1));
-      [optionen[i], optionen[j]] = [optionen[j], optionen[i]];
+    const istKeine = sollLoesung === KEINE;
+    const ab = ablenker(r, ziel, istKeine ? 4 : 3);
+    if (!ab) continue;
+
+    let optionen, loesung;
+    if (istKeine) { optionen = ab; loesung = KEINE; }
+    else {
+      optionen = mischen(r, [ziel, ...ab]);
+      const ist = optionen.findIndex(o => o.id === ziel.id);
+      [optionen[ist], optionen[sollLoesung]] = [optionen[sollLoesung], optionen[ist]];
+      loesung = sollLoesung;
     }
-    return { nr, teile: gedreht, optionen, loesung: optionen.findIndex(o => g.signatur(o) === g.signatur(ziel)) };
+
+    // Teile zufaellig drehen; gespiegelt wird nie.
+    const gedreht = teile.map(t => {
+      const s = F.schwerpunkt(t);
+      const zentriert = t.map(([x, y]) => [x - s[0], y - s[1]]);
+      return F.drehen(zentriert, r() * 2 * Math.PI);
+    });
+
+    return { nr, ziel: ziel.id, zielName: ziel.name, rund: !!ziel.rund, bogen,
+             teile: mischen(r, gedreht), optionen, loesung };
   }
   return null;
 }
 
 function erzeugen(seed, anzahl) {
-  const r = rng(seed), raus = [];
-  let n = 1, schutz = 0;
-  while (raus.length < anzahl && schutz++ < 5000) {
-    const a = aufgabe(r, n);
-    if (a) { raus.push(a); n++; }
+  const konflikt = flaechenKonflikt();
+  if (konflikt) throw new Error('Zwei Grundformen sind flaechengleich: ' + konflikt.join(' / '));
+
+  const r = rng(seed);
+  // Loesungen gleichmaessig ueber A-E streuen; E ist "keine der Formen".
+  const ziele = mischen(r, Array.from({ length: anzahl }, (_, i) => i % 5));
+  const raus = [];
+  for (let i = 0; i < anzahl; i++) {
+    const a = aufgabe(r, i + 1, ziele[i]);
+    if (!a) throw new Error('Aufgabe ' + (i + 1) + ' liess sich nicht erzeugen');
+    raus.push(a);
   }
-  // Loesungsbuchstaben gleichmaessig streuen, damit kein Buchstabe haeuft.
-  const ziele = [];
-  for (let i = 0; i < raus.length; i++) ziele.push(i % 5);
-  for (let i = ziele.length - 1; i > 0; i--) {
-    const j = Math.floor(r() * (i + 1));
-    [ziele[i], ziele[j]] = [ziele[j], ziele[i]];
-  }
-  raus.forEach((it, i) => {
-    const soll = ziele[i];
-    const opt = it.optionen;
-    [opt[it.loesung], opt[soll]] = [opt[soll], opt[it.loesung]];
-    it.loesung = soll;
-  });
   return raus;
 }
 
-module.exports = { erzeugen };
+module.exports = { erzeugen, KEINE, flaechenKonflikt, groesstesBogenstueck };

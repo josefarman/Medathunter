@@ -2,6 +2,44 @@ const I = require('./inhalt');
 let fehler = 0;
 const fail = m => { console.log('  FEHLER: ' + m); fehler++; };
 
+// --- Figuren zusammensetzen: Eindeutigkeit und Loesbarkeit ---
+console.log('Figuren');
+{
+  const FI = require('./figuren'), FO = require('./formen'), ZS = require('./zerschneiden');
+  const konflikt = FI.flaechenKonflikt();
+  if (konflikt) fail('Zwei Grundformen sind flaechengleich: ' + konflikt.join(' / '));
+  const items = FI.erzeugen(20260917, 15);
+  if (items.length !== 15) fail('nur ' + items.length + ' Figurenaufgaben erzeugt');
+  for (const it of items) {
+    const zielF = FO.flaeche(FO.finde(it.ziel).ecken);
+    const summe = it.teile.reduce((a, t) => a + FO.flaeche(t), 0);
+    // Die Teile stammen aus der Zielform - ihre Flaechen muessen exakt aufgehen.
+    if (Math.abs(summe - zielF) > 1e-9)
+      fail(`Aufgabe ${it.nr}: Teileflaeche ${summe.toFixed(6)} != Zielflaeche ${zielF.toFixed(6)}`);
+    // Genau darauf beruht die Eindeutigkeit: jede andere Form hat eine andere Flaeche.
+    for (const o of it.optionen) {
+      if (o.id === it.ziel) continue;
+      if (Math.abs(FO.flaeche(o.ecken) - zielF) < 1e-9)
+        fail(`Aufgabe ${it.nr}: Ablenker ${o.name} ist flaechengleich mit dem Ziel`);
+    }
+    if (new Set(it.optionen.map(o => o.id)).size !== 4) fail(`Aufgabe ${it.nr}: doppelte Antwortform`);
+    if (it.loesung === FI.KEINE) {
+      if (it.optionen.some(o => o.id === it.ziel))
+        fail(`Aufgabe ${it.nr}: Loesung ist (E), die Zielform steht aber unter A-D`);
+    } else if (it.optionen[it.loesung].id !== it.ziel) {
+      fail(`Aufgabe ${it.nr}: markierte Antwort ist nicht die Zielform`);
+    }
+    // Runde Zielform ohne sichtbaren Bogen waere nicht loesbar.
+    if (it.rund && it.bogen < 40) fail(`Aufgabe ${it.nr}: runde Zielform, groesster Bogen nur ${Math.round(it.bogen)}°`);
+    // Nadelfoermige Splitter sind im Druck nicht erkennbar.
+    const duenn = Math.min(...it.teile.map(ZS.gedrungen));
+    if (duenn < 0.42) fail(`Aufgabe ${it.nr}: Teil zu duenn (Kompaktheit ${duenn.toFixed(2)})`);
+  }
+  const v = {}; items.forEach(i => v['ABCDE'[i.loesung]] = (v['ABCDE'[i.loesung]] || 0) + 1);
+  console.log('  ' + items.length + ' Aufgaben, Loesungen: ' + items.map(i => 'ABCDE'[i.loesung]).join(' '));
+  console.log('  Verteilung: ' + JSON.stringify(v) + ' | davon (E) "keine": ' + (v.E || 0));
+}
+
 // --- Zahlenfolgen: naechstes Glied aus der angegebenen Regel nachrechnen ---
 console.log('Zahlenfolgen');
 const naechstes = z => {

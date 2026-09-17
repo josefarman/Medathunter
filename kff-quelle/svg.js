@@ -1,21 +1,53 @@
-const g = require('./geometrie');
+const F = require('./formen');
 
-// Zeichnet eine Zellmenge als Umriss. Die y-Achse wird gespiegelt, damit die
-// Figur so steht, wie man sie auf dem Papier erwartet.
-function figurSVG(zellen, kante, fuell, strich) {
-  const pts = g.vereinfachen(g.kontur(zellen));
-  const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
-  const minX = Math.min(...xs), maxX = Math.max(...xs);
-  const minY = Math.min(...ys), maxY = Math.max(...ys);
-  const b = Math.max(maxX - minX, maxY - minY) || 1;
-  const s = (kante - 10) / b;
-  const ox = (kante - (maxX - minX) * s) / 2, oy = (kante - (maxY - minY) * s) / 2;
-  const d = pts.map((p, i) =>
+// Alle Bruchstuecke einer Aufgabe in einer Reihe, mit EINEM gemeinsamen
+// Massstab - sonst wirkt ein kleines Teil so gross wie ein grosses und die
+// Aufgabe waere nicht mehr loesbar.
+function teileSVG(teile, breite, hoehe, fuell, strich, streuung = 0, maxMassstab = Infinity) {
+  const kaesten = teile.map(F.grenzen);
+  const luft = 5;
+  const nutzHoehe = hoehe * (1 - streuung);              // Rest bleibt fuer die Streuung
+  const summeBreite = kaesten.reduce((s, g) => s + (g.x1 - g.x0), 0);
+  const maxHoehe = Math.max(...kaesten.map(g => g.y1 - g.y0));
+  // Obergrenze verhindert, dass Bruchstuecke einer kleinen Zielform groesser
+  // gezeichnet werden als die Antwortformen daneben.
+  const s = Math.min(
+    (breite - luft * (teile.length + 1)) / summeBreite,
+    (nutzHoehe - luft) / maxHoehe,
+    maxMassstab
+  );
+
+  let x = luft;
+  const pfade = teile.map((t, i) => {
+    const g = kaesten[i];
+    // leichte Hoehenstreuung, damit die Teile verstreut wirken statt aufgereiht
+    const versatz = streuung ? (((i * 7 + 3) % 5) / 4 - 0.5) * hoehe * streuung : 0;
+    const oy = (hoehe - (g.y1 - g.y0) * s) / 2 + versatz;
+    const d = t.map(([px, py], k) =>
+      (k ? 'L' : 'M') +
+      (x + (px - g.x0) * s).toFixed(2) + ' ' +
+      (hoehe - oy - (py - g.y0) * s).toFixed(2)
+    ).join(' ') + ' Z';
+    x += (g.x1 - g.x0) * s + luft;
+    return `<path d="${d}" fill="${fuell}" stroke="${strich}" stroke-width="1.1" stroke-linejoin="round"/>`;
+  });
+
+  return `<svg viewBox="0 0 ${breite} ${hoehe}" width="${breite}" height="${hoehe}">${pfade.join('')}</svg>`;
+}
+
+// Eine Grundform als Antwortmoeglichkeit. Fester Massstab ueber alle Formen,
+// damit Groessenunterschiede echt bleiben und nicht durch Einpassen verschwinden.
+function formSVG(ecken, kante, fuell, strich, massstab = 0.42) {
+  const s = kante * massstab;
+  const g = F.grenzen(ecken);
+  const cx = (g.x0 + g.x1) / 2, cy = (g.y0 + g.y1) / 2;
+  const d = ecken.map(([x, y], i) =>
     (i ? 'L' : 'M') +
-    (ox + (p[0] - minX) * s).toFixed(2) + ' ' +
-    (kante - oy - (p[1] - minY) * s).toFixed(2)
+    (kante / 2 + (x - cx) * s).toFixed(2) + ' ' +
+    (kante / 2 - (y - cy) * s).toFixed(2)
   ).join(' ') + ' Z';
   return `<svg viewBox="0 0 ${kante} ${kante}" width="${kante}" height="${kante}">`
-       + `<path d="${d}" fill="${fuell}" stroke="${strich}" stroke-width="2" stroke-linejoin="round"/></svg>`;
+       + `<path d="${d}" fill="${fuell}" stroke="${strich}" stroke-width="1.3" stroke-linejoin="round"/></svg>`;
 }
-module.exports = { figurSVG };
+
+module.exports = { teileSVG, formSVG };
