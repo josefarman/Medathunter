@@ -4,8 +4,135 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MedAT-Hunter – Strategisches MedAT-Mentoring</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+/* Selbst gehostete Schriften - keine Verbindung zu Google beim Seitenaufruf. */
+
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(/fonts/outfit-300-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(/fonts/outfit-300-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/outfit-400-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/outfit-400-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/outfit-500-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/outfit-500-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/outfit-600-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/outfit-600-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/fonts/playfair-display-700-italic-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/fonts/playfair-display-700-italic-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/fonts/playfair-display-700-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/fonts/playfair-display-700-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url(/fonts/playfair-display-900-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url(/fonts/playfair-display-900-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
   --navy: #0F1623; --navy2: #161E2E; --blue: #4A90C4;
@@ -165,6 +292,9 @@ section { padding: 100px 24px; }
 .newsletter-btn { background: var(--gold); color: #0F1623; padding: 14px 24px; border-radius: 10px; border: none; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: background 0.2s; }
 .newsletter-btn:hover { background: #D4B35A; }
 .newsletter-note { font-size: 12px; color: var(--muted); margin-top: 12px; }
+.newsletter-ok { max-width: 480px; margin: 0 auto; padding: 18px 20px; background: rgba(46,204,113,0.1); border: 1px solid rgba(46,204,113,0.3); border-radius: 12px; color: #2ECC71; font-size: 15px; font-weight: 500; }
+#brevoZiel { display: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
 /* CONTACT */
 #contact { background: var(--navy); }
@@ -184,6 +314,8 @@ section { padding: 100px 24px; }
 .form-submit { background: var(--gold); color: #0F1623; padding: 15px; border-radius: 10px; border: none; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
 .form-submit:hover { background: #D4B35A; transform: translateY(-1px); }
 .form-success { display: none; text-align: center; padding: 24px; background: rgba(46,204,113,0.1); border: 1px solid rgba(46,204,113,0.3); border-radius: 12px; color: #2ECC71; font-size: 15px; }
+.form-error { display: none; margin-top: 4px; padding: 12px 14px; background: rgba(192,57,43,0.12); border: 1px solid rgba(192,57,43,0.35); border-radius: 10px; color: #E74C3C; font-size: 14px; }
+.form-submit[disabled] { opacity: 0.6; cursor: wait; }
 
 /* ABOUT */
 #about { background: var(--navy2); }
@@ -509,8 +641,14 @@ footer { background: #090D14; border-top: 1px solid var(--border); padding: 64px
       <div class="section-eyebrow" style="text-align:center">Gratis</div>
       <h2>Hol dir deinen kostenlosen KFF-Trainingstest</h2>
       <p>Trag dich ein und bekomm sofort einen kompletten KFF-Probetest direkt in dein Postfach – inklusive Auswertung und den häufigsten Fehlern.</p>
-      <form class="newsletter-form" onsubmit="handleNewsletter(event)">
-        <input type="email" class="newsletter-input" placeholder="Deine E-Mail Adresse" required>
+      <iframe name="brevoZiel" id="brevoZiel" title="Newsletter-Anmeldung" tabindex="-1"></iframe>
+      <form class="newsletter-form" id="newsletterForm" method="POST" target="brevoZiel"
+            action="https://aa15c3af.sibforms.com/serve/MUIFADF9Oe1yuNvQIbEZjf-dddki3VzRQ-DfiuFvCkawN1InLf84H0g726w0QXayQbDf3ND0WpD4VasABq9Z5jZIY1dZb6KDgN01oXMfel1maEeta4VPR-7QeLi_-PyLj5mmtWGSlg9xgH2EUZSI8DHpJG2Ll3rnhzEKKjF3GloD2BDKn99oNC1tew0IT9E1mtrskzL7BpTjBvcvRg=="
+            onsubmit="handleNewsletter(event)">
+        <label class="sr-only" for="nl-email">Deine E-Mail-Adresse</label>
+        <input type="email" id="nl-email" name="EMAIL" class="newsletter-input" placeholder="Deine E-Mail Adresse" required>
+        <input type="text" name="email_address_check" value="" class="sr-only" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <input type="hidden" name="locale" value="de">
         <button type="submit" class="newsletter-btn">Gratis erhalten →</button>
       </form>
       <p class="newsletter-note">Kein Spam. Jederzeit abmeldbar.</p>
@@ -559,28 +697,28 @@ footer { background: #090D14; border-top: 1px solid var(--border); padding: 64px
         <div class="contact-info-item"><span>⏱</span><span>Antwort innerhalb von 24h</span></div>
       </div>
       <div class="fade-up">
-        <form class="contact-form" action="https://formspree.io/f/mppajvbr" method="POST" id="contactForm">
+        <form class="contact-form" action="https://formspree.io/f/mppajvbr" method="POST" id="contactForm" onsubmit="handleContact(event)">
           <div class="form-row">
             <div class="form-group">
-              <label>Vorname *</label>
-              <input type="text" placeholder="Max" required>
+              <label for="cf-vorname">Vorname *</label>
+              <input id="cf-vorname" name="Vorname" type="text" placeholder="Max" required>
             </div>
             <div class="form-group">
-              <label>Nachname *</label>
-              <input type="text" placeholder="Mustermann" required>
+              <label for="cf-nachname">Nachname *</label>
+              <input id="cf-nachname" name="Nachname" type="text" placeholder="Mustermann" required>
             </div>
           </div>
           <div class="form-group">
-            <label>E-Mail *</label>
-            <input type="email" placeholder="deine@email.at" required>
+            <label for="cf-email">E-Mail *</label>
+            <input id="cf-email" name="email" type="email" placeholder="deine@email.at" required>
           </div>
           <div class="form-group">
-            <label>Telefonnummer</label>
-            <input type="tel" placeholder="+43 XXX XXX XXXX">
+            <label for="cf-telefon">Telefonnummer</label>
+            <input id="cf-telefon" name="Telefon" type="tel" placeholder="+43 XXX XXX XXXX">
           </div>
           <div class="form-group">
-            <label>Welches Paket interessiert dich?</label>
-            <select>
+            <label for="cf-paket">Welches Paket interessiert dich?</label>
+            <select id="cf-paket" name="Paket">
               <option value="">Noch nicht sicher</option>
               <option>Bronze (1–2h/Woche)</option>
               <option>Silber (3–6h/Woche)</option>
@@ -589,13 +727,14 @@ footer { background: #090D14; border-top: 1px solid var(--border); padding: 64px
             </select>
           </div>
           <div class="form-group">
-            <label>Wann machst du den MedAT?</label>
-            <select>
+            <label for="cf-termin">Wann machst du den MedAT?</label>
+            <select id="cf-termin" name="MedAT-Termin">
               <option selected>Juli 2027</option>
               <option>Noch nicht sicher</option>
             </select>
           </div>
-          <button type="submit" class="form-submit">Erstgespräch anfragen →</button>
+          <button type="submit" class="form-submit" id="contactSubmit">Erstgespräch anfragen →</button>
+          <p class="form-error" id="formError"></p>
         </form>
         <div class="form-success" id="formSuccess">
           ✓ Danke! Wir melden uns innerhalb von 24 Stunden bei dir.
@@ -679,7 +818,7 @@ footer { background: #090D14; border-top: 1px solid var(--border); padding: 64px
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2025 MedAT-Hunter · medathunter.at · Alle Rechte vorbehalten</p>
+      <p>© 2026 MedAT-Hunter · medathunter.at · Alle Rechte vorbehalten</p>
       <p>Nachhilfe & Mentoring · Wien, Österreich</p>
     </div>
   </div>
@@ -768,15 +907,42 @@ function toggleFaq(btn) {
   if (!isOpen) item.classList.add('open');
 }
 
-function handleContact(e) {
+async function handleContact(e) {
   e.preventDefault();
-  document.getElementById('contactForm').style.display = 'none';
-  document.getElementById('formSuccess').style.display = 'block';
+  const form = document.getElementById('contactForm');
+  const btn = document.getElementById('contactSubmit');
+  const err = document.getElementById('formError');
+  err.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Wird gesendet …';
+  try {
+    const res = await fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { Accept: 'application/json' }
+    });
+    if (!res.ok) throw new Error(res.status);
+    form.style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+  } catch {
+    err.textContent = 'Das hat leider nicht geklappt. Schreib uns bitte direkt an office@medathunter.at.';
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Erstgespräch anfragen →';
+  }
 }
 
 function handleNewsletter(e) {
-  e.preventDefault();
-  e.target.innerHTML = '<p style="color:var(--gold);font-weight:600;font-size:16px">✓ Danke! Schau in dein Postfach.</p>';
+  // Bewusst kein preventDefault: das Formular postet an Brevo in den
+  // versteckten Rahmen. Ein fetch() waere fremder Herkunft und koennte die
+  // Antwort nicht lesen - die Anmeldung soll aber verlaesslich ankommen.
+  const form = e.target;
+  setTimeout(() => {
+    form.outerHTML = '<p class="newsletter-ok">✓ Fast geschafft – bestätige den Link in deiner E-Mail, ' +
+      'dann kommt der KFF-Trainingstest.</p>';
+    const note = document.querySelector('.newsletter-note');
+    if (note) note.textContent = 'Keine Bestätigungsmail bekommen? Schau kurz im Spam-Ordner nach.';
+  }, 0);
 }
 
 const observer = new IntersectionObserver(entries => {
