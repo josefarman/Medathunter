@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Der KFF-Trainingstest wird ueber die Newsletter-Anmeldung ausgeliefert.
+# Waere er bei Google auffindbar, umginge man die Anmeldung.
+Disallow: /kff-trainingstest.pdf
+Disallow: /kff-quelle/
+
+Sitemap: https://medathunter.at/sitemap.xml
