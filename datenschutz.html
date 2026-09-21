@@ -160,12 +160,17 @@ body { font-family: 'Outfit', sans-serif; background: var(--navy); color: var(--
 nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 48px; background: rgba(15,22,35,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
 .nav-logo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--cream); text-decoration: none; letter-spacing: 1px; }
 .nav-logo span { color: var(--gold); }
+.nav-logo { display: flex; align-items: center; gap: 10px; }
+.nav-mark { flex: 0 0 auto; display: block; }
+.nav-wort { color: var(--cream); }
+.nav-wort span { color: var(--gold); }
+
 .nav-back { color: var(--muted); font-size: 14px; text-decoration: none; transition: color 0.2s; }
 .nav-back:hover { color: var(--cream); }
 
 .page { max-width: 720px; margin: 0 auto; padding: 80px 24px; }
 .page-eyebrow { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 16px; }
-.page-title { font-family: 'Playfair Display', serif; font-size: clamp(32px,4vw,48px); font-weight: 700; margin-bottom: 48px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.page-title { font-family: 'Playfair Display', serif; font-size: clamp(32px,4vw,48px); font-weight: 700; margin-bottom: 48px; padding-bottom: 24px; border-bottom: 1px solid var(--border);  overflow-wrap: break-word; hyphens: auto; }
 
 .section { margin-bottom: 40px; }
 .section h2 { font-size: 16px; font-weight: 600; color: var(--gold); margin-bottom: 12px; letter-spacing: 0.5px; }
@@ -186,7 +191,7 @@ footer a { color: var(--gold); text-decoration: none; margin: 0 8px; }
 <body>
 
 <nav>
-  <a href="/" class="nav-logo">MedAT<span>-Hunter</span></a>
+  <a href="/" class="nav-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="30" height="30" class="nav-mark" role="img" aria-label="MedAT-Hunter"><circle cx="32" cy="32" r="22" fill="none" stroke="#C9A84C" stroke-width="2.2"/><path d="M32 7.5 v5 M32 51.5 v5 M7.5 32 h5 M51.5 32 h5" stroke="#C9A84C" stroke-width="2.2" stroke-linecap="round"/><path d="M32 19 V45" stroke="#F0EDE8" stroke-width="2.7" stroke-linecap="round"/><path d="M26.5 43.5 C26.5 40.2 37.5 40.2 37.5 36.9 C37.5 33.6 26.5 33.6 26.5 30.3 C26.5 27 37.5 27 37.5 23.7 C37.5 21 34.2 19.8 31.6 21.2" fill="none" stroke="#F0EDE8" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30.9" cy="20.6" r="1.5" fill="#F0EDE8"/><path d="M32 28.75 V35.25 M28.75 32 H35.25" stroke="#C0392B" stroke-width="1.2" stroke-linecap="butt"/></svg><span class="nav-wort">MedAT<span>-Hunter</span></span></a>
   <a href="/" class="nav-back">← Zurück zur Startseite</a>
 </nav>
 
