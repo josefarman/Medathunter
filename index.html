@@ -294,6 +294,12 @@ section { padding: 100px 24px; }
 .cta-big { display: inline-block; background: var(--gold); color: #0F1623; padding: 18px 48px; border-radius: 12px; font-size: 16px; font-weight: 700; text-decoration: none; transition: all 0.2s; border: none; cursor: pointer; font-family: 'Outfit', sans-serif; }
 .cta-big:hover { background: #D4B35A; transform: translateY(-2px); }
 .erstgespraech-note { font-size: 13px; color: var(--muted); margin-top: 16px; }
+.erstgespraech-vorlauf { font-size: 14.5px; color: var(--cream); margin-top: 20px; font-weight: 500; }
+.erstgespraech-vorlauf b { color: var(--gold); }
+.hero-countdown { margin-top: 26px; font-size: 14px; color: var(--muted); position: relative; z-index: 1;
+                  display: flex; align-items: center; gap: 9px; justify-content: center; }
+.hero-countdown::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); flex: 0 0 auto; }
+.hero-countdown b { color: var(--cream); font-weight: 600; }
 
 /* REFERRAL */
 .referral { margin-top: 32px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 16px; padding: 40px; display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
@@ -461,6 +467,7 @@ footer { background: #090D14; border-top: 1px solid var(--border); padding: 64px
     <a href="#contact" class="btn-primary">Kostenloses Erstgespräch →</a>
     <a href="#pricing" class="btn-outline">Pakete ansehen</a>
   </div>
+  <p class="hero-countdown fade-up" id="heroCountdown" hidden></p>
   <div class="hero-stats fade-up">
     <div>
       <div class="stat-num">85%</div>
@@ -634,6 +641,7 @@ footer { background: #090D14; border-top: 1px solid var(--border); padding: 64px
       <h3>Nicht sicher welches Paket passt?</h3>
       <p>Buch ein kostenloses 20-minütiges Erstgespräch – wir schauen gemeinsam was für dich Sinn macht.<br>Kein Druck, keine Sorgen. Und falls du danach startest: der erste Monat ist komplett unverbindlich.</p>
       <a href="#contact" class="cta-big">Kostenloses Erstgespräch buchen →</a>
+      <p class="erstgespraech-vorlauf" id="ctaVorlauf" hidden></p>
       <p class="erstgespraech-note">Alle Abos laufen bis zum MedAT-Tag · Kein automatisches Verlängern</p>
     </div>
 
@@ -956,6 +964,35 @@ async function handleContact(e) {
     btn.textContent = 'Erstgespräch anfragen →';
   }
 }
+
+// Einzige Stelle fuer den Testtermin. Steht der naechste fest, hier aendern.
+const MEDAT = { datum: new Date(2027, 6, 2), text: '2. Juli 2027' };
+
+// Angefangene Wochen bis zum Test; null, sobald der Termin vorbei ist -
+// sonst zaehlte die Seite ins Negative, statt zu schweigen.
+function wochenBisMedAT() {
+  const tage = Math.ceil((MEDAT.datum - new Date()) / 86400000);
+  return tage > 0 ? Math.ceil(tage / 7) : null;
+}
+
+function zeigeCountdown() {
+  const w = wochenBisMedAT();
+  if (w === null) return;                       // Termin vorbei: Zeilen bleiben verborgen
+
+  const hero = document.getElementById('heroCountdown');
+  hero.innerHTML = `Noch <b>${w} ${w === 1 ? 'Woche' : 'Wochen'}</b> bis zum MedAT am ${MEDAT.text}`;
+  hero.hidden = false;
+
+  // Zoegern sichtbar machen - aber nur, solange der Vergleich noch Sinn ergibt.
+  const spaeter = w - 9;                        // rund zwei Monate
+  if (spaeter >= 4) {
+    const cta = document.getElementById('ctaVorlauf');
+    cta.innerHTML = `Wer heute beginnt, hat <b>${w} Wochen</b>. ` +
+                    `Wer noch zwei Monate überlegt, hat <b>${spaeter}</b>.`;
+    cta.hidden = false;
+  }
+}
+zeigeCountdown();
 
 function handleNewsletter(e) {
   // Bewusst kein preventDefault: das Formular postet an Brevo in den
