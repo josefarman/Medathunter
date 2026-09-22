@@ -556,13 +556,13 @@ footer { background: #090D14; border-top: 1px solid var(--border); padding: 64px
   <div class="section-inner">
     <div class="section-eyebrow">Pakete</div>
     <h2 class="section-title">Wähl deinen Weg<br>zum Studienplatz</h2>
-    <p class="section-sub">Echtes 1:1 Coaching – dein Mentor kümmert sich ausschließlich um dich. Kein Gruppenunterricht, kein geteilter Fokus.</p>
+    <p class="section-sub" id="pricingSub">Echtes 1:1 Coaching – dein Mentor kümmert sich ausschließlich um dich. Kein Gruppenunterricht, kein geteilter Fokus.</p>
 
     <div class="pricing-toggle">
       <div class="pricing-tabs" id="pricingTabs">
         <div class="pricing-tab-bg" id="tabBg"></div>
         <button class="pricing-tab active" id="tabSolo" onclick="setMode('solo')">👤 1:1 Mentoring</button>
-        <button class="pricing-tab" id="tabBuddy" onclick="setMode('buddy')">👥 Buddy-System <span class="buddy-badge-tab">bis 35% günstiger</span></button>
+        <button class="pricing-tab" id="tabBuddy" onclick="setMode('buddy')">👥 Buddy-System <span class="buddy-badge-tab" id="buddyBadge"></span></button>
       </div>
     </div>
 
@@ -576,7 +576,7 @@ footer { background: #090D14; border-top: 1px solid var(--border); padding: 64px
         <hr class="card-divider">
         <div class="price-options" id="prices-bronze"></div>
         <ul class="card-features">
-          <li><span class="check">✦</span><span>Persönliches 1:1 Mentoring – 1 bis 2h pro Woche</span></li>
+          <li><span class="check">✦</span><span class="betreuung" data-stufe="bronze"></span></li>
           <li><span class="check">✦</span><span>WhatsApp Support</span></li>
           <li><span class="check">✦</span><span>Hunter Lernmaterialien</span></li>
           <li><span class="check">✦</span><span>2 Testsimulationen mit Auswertung</span></li>
@@ -595,7 +595,7 @@ footer { background: #090D14; border-top: 1px solid var(--border); padding: 64px
         <hr class="card-divider">
         <div class="price-options" id="prices-silver"></div>
         <ul class="card-features">
-          <li><span class="check">✦</span><span>Persönliches 1:1 Mentoring – 3 bis 6h pro Woche</span></li>
+          <li><span class="check">✦</span><span class="betreuung" data-stufe="silver"></span></li>
           <li><span class="check">✦</span><span>WhatsApp Support</span></li>
           <li><span class="check">✦</span><span>Hunter Lernmaterialien</span></li>
           <li><span class="check">✦</span><span>4 Testsimulationen + 1 Generalprobe</span></li>
@@ -621,7 +621,7 @@ footer { background: #090D14; border-top: 1px solid var(--border); padding: 64px
           </div>
         </div>
         <ul class="card-features">
-          <li><span class="check">✦</span><span>Persönliches 1:1 Mentoring – 7 bis 9h pro Woche</span></li>
+          <li><span class="check">✦</span><span class="betreuung" data-stufe="gold"></span></li>
           <li><span class="check">✦</span><span>WhatsApp Support</span></li>
           <li><span class="check">✦</span><span>Hunter Lernmaterialien</span></li>
           <li><span class="check">✦</span><span>6 Testsimulationen + 1 Generalprobe</span></li>
@@ -857,50 +857,66 @@ footer { background: #090D14; border-top: 1px solid var(--border); padding: 64px
 </footer>
 
 <script>
-const solo = {
-  bronze: [
-    { h: '1h / Woche', p: '192€/Mo', ph: '48€/h' },
-    { h: '2h / Woche', p: '384€/Mo', ph: '48€/h' },
-  ],
-  silver: [
-    { h: '3h / Woche', p: '540€/Mo',   ph: '45€/h' },
-    { h: '4h / Woche', p: '720€/Mo',   ph: '45€/h' },
-    { h: '5h / Woche', p: '900€/Mo',   ph: '45€/h' },
-    { h: '6h / Woche', p: '1.080€/Mo', ph: '45€/h' },
-  ]
+// Einzige Quelle fuer Stundensaetze und Stundenbaender. Monatspreise und die
+// beworbene Ersparnis leiten sich daraus ab, koennen also nicht auseinander
+// laufen. Zuvor warb der Reiter mit "bis 35% guenstiger", waehrend die Preise
+// hoechstens 27% hergaben.
+const WOCHEN_PRO_MONAT = 4;
+const PAKETE = {
+  bronze: { stunden: [1, 2],       solo: 48, buddy: 35 },
+  silver: { stunden: [3, 4, 5, 6], solo: 45, buddy: 33 },
+  gold:   { stunden: [7, 8, 9],    solo: 40, buddy: 30 },
 };
-const buddy = {
-  bronze: [
-    { h: '1h / Woche', p: '140€/Mo', ph: '35€/h p.P.' },
-    { h: '2h / Woche', p: '280€/Mo', ph: '35€/h p.P.' },
-  ],
-  silver: [
-    { h: '3h / Woche', p: '396€/Mo', ph: '33€/h p.P.' },
-    { h: '4h / Woche', p: '528€/Mo', ph: '33€/h p.P.' },
-    { h: '5h / Woche', p: '660€/Mo', ph: '33€/h p.P.' },
-    { h: '6h / Woche', p: '792€/Mo', ph: '33€/h p.P.' },
-  ]
+
+const betrag = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + '\u20AC';
+
+// Groesste Ersparnis ueber alle Pakete, auf ganze Prozent abgerundet - lieber
+// untertreiben als eine Zahl bewerben, die die Preise nicht hergeben.
+function ersparnisProzent() {
+  return Math.floor(Math.max(...Object.values(PAKETE).map(p => (1 - p.buddy / p.solo) * 100)));
+}
+
+const UNTERTITEL = {
+  solo:  'Echtes 1:1 Coaching \u2013 dein Mentor k\u00FCmmert sich ausschlie\u00DFlich um dich. '
+       + 'Kein Gruppenunterricht, kein geteilter Fokus.',
+  buddy: 'Zu zweit bei einem Mentor \u2013 ihr lernt gemeinsam, zur selben Zeit. '
+       + 'Rund ein Viertel g\u00FCnstiger pro Person, und ihr zieht euch gegenseitig mit.',
 };
+
 let isBuddy = false;
 
 function renderPrices() {
-  const d = isBuddy ? buddy : solo;
-  ['bronze','silver'].forEach(tier => {
-    const wrap = document.getElementById('prices-' + tier);
-    wrap.innerHTML = d[tier].map((row, i) => `
-      <div class="price-row ${i===0?'selected':''}" onclick="selectPrice(this)">
-        <span class="price-hours">${row.h}</span>
+  const satz = p => isBuddy ? p.buddy : p.solo;
+  const zusatz = isBuddy ? '/h p.P.' : '/h';
+
+  ['bronze', 'silver'].forEach(stufe => {
+    const p = PAKETE[stufe];
+    document.getElementById('prices-' + stufe).innerHTML = p.stunden.map((h, i) => `
+      <div class="price-row ${i === 0 ? 'selected' : ''}" onclick="selectPrice(this)">
+        <span class="price-hours">${h}h / Woche</span>
         <div class="price-right">
-          <div class="price-perh">${row.ph}</div>
-          <span class="price-monthly">${row.p}</span>
+          <div class="price-perh">${betrag(satz(p))}${zusatz}</div>
+          <span class="price-monthly">${betrag(h * WOCHEN_PRO_MONAT * satz(p))}/Mo</span>
         </div>
       </div>`).join('');
   });
+
+  const g = PAKETE.gold;
   document.getElementById('prices-gold').innerHTML = `
     <div class="on-request">
       <strong>Preis auf Anfrage</strong>
-      7–9h / Woche · ${isBuddy ? '30€/h p.P.' : '40€/h'} · Limitiert
+      ${g.stunden[0]}\u2013${g.stunden[g.stunden.length - 1]}h / Woche \u00B7 ${betrag(satz(g))}${zusatz} \u00B7 Limitiert
     </div>`;
+
+  document.getElementById('pricingSub').textContent = UNTERTITEL[isBuddy ? 'buddy' : 'solo'];
+
+  document.querySelectorAll('.betreuung').forEach(el => {
+    const p = PAKETE[el.dataset.stufe];
+    const spanne = `${p.stunden[0]} bis ${p.stunden[p.stunden.length - 1]}h pro Woche`;
+    el.textContent = isBuddy
+      ? `Mentoring zu zweit \u2013 ${spanne}`
+      : `Pers\u00F6nliches 1:1 Mentoring \u2013 ${spanne}`;
+  });
 }
 
 function setMode(mode) {
@@ -1012,6 +1028,7 @@ const observer = new IntersectionObserver(entries => {
 document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
 window.addEventListener('load', () => {
+  document.getElementById('buddyBadge').textContent = ersparnisProzent() + '% g\u00FCnstiger';
   renderPrices();
   const tabBg = document.getElementById('tabBg');
   const tabSolo = document.getElementById('tabSolo');
