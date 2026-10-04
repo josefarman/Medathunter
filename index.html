@@ -351,9 +351,13 @@ section { padding: 100px 24px; }
 /* ABOUT */
 #about { background: var(--navy2); }
 .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; margin-top: 64px; }
-.about-img { aspect-ratio: 4/5; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 20px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-.about-img::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(74,144,196,0.08), transparent); }
-.about-img-placeholder { font-size: 64px; }
+.about-img { aspect-ratio: 866/1000; border: 1px solid var(--border); border-radius: 20px; position: relative; overflow: hidden; margin: 0; }
+.about-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Beschriftung sitzt in Prozent des Bildes, damit sie bei jeder Breite am Kopf bleibt */
+.bild-marke { position: absolute; font-size: clamp(10px,1.25vw,14px); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; text-shadow: 0 1px 8px rgba(0,0,0,0.65); }
+.marke-du { left: 23%; top: 14.5%; color: var(--gold); }
+.marke-josef { right: 30%; top: 30%; color: var(--cream); }
+.bild-unterschrift { margin-top: 14px; font-size: 13px; color: var(--muted); line-height: 1.6; text-align: center; }
 .about-tag { display: inline-block; background: var(--gold-light); color: var(--gold); font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 20px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px; }
 .about-text h2 { font-family: 'Playfair Display', serif; font-size: clamp(28px,3vw,42px); font-weight: 700; line-height: 1.2; margin-bottom: 24px; }
 .about-text p { font-size: 15px; color: var(--muted); line-height: 1.8; margin-bottom: 16px; }
@@ -413,7 +417,7 @@ footer { background: #090D14; border-top: 1px solid var(--border); padding: 64px
   .pricing-cards { grid-template-columns: 1fr; }
   .pricing-card.featured { transform: none; }
   .about-grid { grid-template-columns: 1fr; gap: 40px; }
-  .about-img { aspect-ratio: 3/2; max-height: 280px; }
+  .about-img { aspect-ratio: 866/1000; max-height: none; }
   .contact-grid { grid-template-columns: 1fr; gap: 40px; }
   .referral { flex-direction: column; }
   .footer-top { grid-template-columns: 1fr 1fr; }
@@ -693,8 +697,14 @@ footer { background: #090D14; border-top: 1px solid var(--border); padding: 64px
 <section id="about">
   <div class="section-inner">
     <div class="about-grid">
-      <div class="about-img fade-up">
-        <span class="about-img-placeholder">📷</span>
+      <div class="fade-up">
+        <figure class="about-img">
+          <img src="/josef-handschlag.jpg" width="1732" height="2000" loading="lazy"
+               alt="Josef im weissen Kittel reicht einer zweiten Person die Hand. Die zweite Person ist als schwarze Silhouette dargestellt.">
+          <span class="bild-marke marke-du">Du, nächstes Jahr</span>
+          <span class="bild-marke marke-josef">Josef</span>
+        </figure>
+        <p class="bild-unterschrift">Links ist noch Platz. Nächstes Jahr könntest du dort stehen.</p>
       </div>
       <div class="about-text fade-up">
         <div class="about-tag">Über den Gründer</div>
